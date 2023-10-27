@@ -1,4 +1,5 @@
 from ctypes import *
+from src.common.interception.stroke import *
 
 MAX_DEVICES = 20
 MAX_KEYBOARD = 10
@@ -6,7 +7,7 @@ MAX_MOUSE = 10
 k32 = windll.LoadLibrary('kernel32')
 
 
-class interception():
+class Interception():
     _context = []
     k32 = None
     _c_events = (c_void_p * MAX_DEVICES)()
@@ -17,7 +18,7 @@ class interception():
                 _device = device(k32.CreateFileA(b'\\\\.\\interception%02d' % i,
                                                  0x80000000, 0, 0, 3, 0, 0),
                                  k32.CreateEventA(0, 1, 0, 0),
-                                 interception.is_keyboard(i))
+                                 Interception.is_keyboard(i))
                 self._context.append(_device)
                 self._c_events[i] = _device.event
 
@@ -39,7 +40,7 @@ class interception():
                 result = self._context[i].set_filter(filter)
 
     def get_HWID(self, device: int):
-        if not interception.is_invalid(device):
+        if not Interception.is_invalid(device):
             try:
                 return self._context[device].get_HWID().decode("utf-16")
             except:
@@ -47,11 +48,11 @@ class interception():
         return ""
 
     def receive(self, device: int):
-        if not interception.is_invalid(device):
+        if not Interception.is_invalid(device):
             return self._context[device].receive()
 
     def send(self, device: int, stroke: stroke):
-        if not interception.is_invalid(device):
+        if not Interception.is_invalid(device):
             self._context[device].send(stroke)
 
     @staticmethod

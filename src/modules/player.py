@@ -1,4 +1,5 @@
-from src.common.interception import key_stroke
+from src.common import utils
+from src.common.interception.stroke import *
 import time
 
 # Scancodes for arrow and alphanumeric/modifier keys should be separated. They have different key-states.
@@ -57,6 +58,7 @@ class Player:
         else:
             self.context.send(self.device, key_stroke(SC_DECIMAL[key], 0, 0))
 
+    @utils.run_if_enabled
     def go_to(self, target):
         """
         Attempts to move player to a specific (x, y) location on the screen.

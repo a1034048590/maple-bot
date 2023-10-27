@@ -8,7 +8,7 @@ import importlib
 import traceback
 from os.path import splitext, basename
 from src.common import config, utils
-from src.detection import detection
+# from src.detection import detection
 from src.routine import components
 from src.routine.routine import Routine
 from src.command_book.command_book import CommandBook
@@ -71,7 +71,8 @@ class Bot(Configurable):
         """
 
         print('\n[~] Initializing detection algorithm:\n')
-        model = detection.load_model()
+        # model = detection.load_model()
+        model = None
         print('\n[~] Initialized detection algorithm')
 
         self.ready = True

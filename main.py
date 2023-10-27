@@ -1,70 +1,78 @@
 import random
 
-from rune_solver import find_arrow_directions
+# from rune_solver import find_arrow_directions
 
 import time
+
+from src.common.interception import interception_filter_key_state
+from src.common.interception.interception import Interception
 from src.modules.bot import Bot
 from src.modules.capture import Capture
+from src.modules.game import Game
 from src.modules.notifier import Notifier
 from src.modules.listener import Listener
 from src.modules.gui import GUI
+from src.modules.player import Player
 
 
 def bind(context):
-    context.set_filter(interception.is_keyboard, interception_filter_key_state.INTERCEPTION_FILTER_KEY_ALL.value)
+    context.set_filter(Interception.is_keyboard, interception_filter_key_state.INTERCEPTION_FILTER_KEY_ALL.value)
     print("Click any key on your keyboard.")
     device = None
     while True:
         device = context.wait()
-        if interception.is_keyboard(device):
+        if Interception.is_keyboard(device):
             print(f"Bound to keyboard: {context.get_HWID(device)}.")
-            c.set_filter(interception.is_keyboard, 0)
+            c.set_filter(Interception.is_keyboard, 0)
             break
     return device
 
 
-def solve_rune(g, p, target):
-    """
-    Given the (x, y) location of a rune, the bot will attempt to move the player to the rune and solve it.
-    """
-    while True:
-        print("Pathing towards rune...")
-        p.go_to(target)
-        # Activate the rune.
-        time.sleep(1)
-        p.press("SPACE")
-        # Take a picture of the rune.
-        time.sleep(1)
-        img = g.get_rune_image()
-        print("Attempting to solve rune...")
-        directions = find_arrow_directions(img)
-
-        if len(directions) == 4:
-            print(f"Directions: {directions}.")
-            for d, _ in directions:
-                p.press(d)
-
-            # The player dot will be blocking the rune dot, attempt to move left/right to unblock it.
-            p.hold("LEFT")
-            time.sleep(random.uniform(0.5, 1.25))
-            p.release("LEFT")
-
-            p.hold("RIGHT")
-            time.sleep(random.uniform(0.5, 1.25))
-            p.release("RIGHT")
-
-            rune_location = g.get_rune_location()
-            if rune_location is None:
-                print("Rune has been solved.")
-                break
-            else:
-                print("Trying again...")
+# def solve_rune(g, p, target):
+#     """
+#     Given the (x, y) location of a rune, the bot will attempt to move the player to the rune and solve it.
+#     """
+#     while True:
+#         print("Pathing towards rune...")
+#         p.go_to(target)
+#         # Activate the rune.
+#         time.sleep(1)
+#         p.press("SPACE")
+#         # Take a picture of the rune.
+#         time.sleep(1)
+#         img = g.get_rune_image()
+#         print("Attempting to solve rune...")
+#         directions = find_arrow_directions(img)
+#
+#         if len(directions) == 4:
+#             print(f"Directions: {directions}.")
+#             for d, _ in directions:
+#                 p.press(d)
+#
+#             # The player dot will be blocking the rune dot, attempt to move left/right to unblock it.
+#             p.hold("LEFT")
+#             time.sleep(random.uniform(0.5, 1.25))
+#             p.release("LEFT")
+#
+#             p.hold("RIGHT")
+#             time.sleep(random.uniform(0.5, 1.25))
+#             p.release("RIGHT")
+#
+#             rune_location = g.get_rune_location()
+#             if rune_location is None:
+#                 print("Rune has been solved.")
+#                 break
+#             else:
+#                 print("Trying again...")
 
 
 if __name__ == '__main__':
+
     bot = Bot()
     capture = Capture()
+    notifier = Notifier()
     listener = Listener()
+    # game = Game((5, 60, 180, 130))
 
     bot.start()
     while not bot.ready:
@@ -73,6 +81,11 @@ if __name__ == '__main__':
     capture.start()
     while not capture.ready:
         time.sleep(0.01)
+
+    game = Game()
+    c = Interception()
+    d = bind(c)
+    player = Player(c, d, game)
 
     listener.start()
     while not listener.ready:

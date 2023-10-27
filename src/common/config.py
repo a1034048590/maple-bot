@@ -45,3 +45,5 @@ listener = None
 
 # Shares the gui to all modules
 gui = None
+
+game = None

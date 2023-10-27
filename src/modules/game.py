@@ -1,5 +1,10 @@
-from src.common import gdi_capture
+import cv2
+
+from src.common import config
 import numpy as np
+
+from src.common.gdi_capture import gdi_capture
+from src.common.utils import convert_image, show_image
 
 # These are colors taken from the mini-map in BGRA format.
 PLAYER_BGRA = (68, 221, 255, 255)
@@ -10,10 +15,16 @@ BUDDY_BGRA = (225, 221, 17, 255)
 
 
 class Game:
-    def __init__(self, region):
+    def __init__(self, region=None):
+        config.game = self
         self.hwnd = gdi_capture.find_window_from_executable_name("MapleStory.exe")
+
         # These values should represent pixel locations on the screen of the mini-map.
-        self.top, self.left, self.bottom, self.right = region[0], region[1], region[2], region[3]
+        if region:
+            self.top, self.left, self.bottom, self.right = region[0], region[1], region[2], region[3]
+        else:
+            self.top, self.left, self.bottom, self.right = self.get_minimap_var(config.capture.minimap['minimap'])
+        print(self.get_player_location())
 
     def get_rune_image(self):
         """
@@ -39,7 +50,9 @@ class Game:
                 containing 4-length np.ndarray(s) representing BGRA values of each pixel.
                 """
                 # Crop the image to show only the mini-map.
-                img_cropped = img[self.left:self.right, self.top:self.bottom]
+                # img_cropped = img[self.left:self.right, self.top:self.bottom]
+                img_cropped = img[self.top:self.bottom, self.left:self.right]
+
                 height, width = img_cropped.shape[0], img_cropped.shape[1]
                 # Reshape the image from 3-d to 2-d by row-major order.
                 img_reshaped = np.reshape(img_cropped, ((width * height), 4), order="C")
@@ -78,3 +91,9 @@ class Game:
         """
         location = self.locate(ENEMY_BGRA, GUILD_BGRA, BUDDY_BGRA)
         return len(location) > 0
+
+    def get_minimap_var(self, minimap_img):
+        with gdi_capture.CaptureWindow(self.hwnd) as img:
+            show_image(img)
+            show_image(minimap_img)
+            return convert_image(minimap_img, img)

@@ -104,8 +104,8 @@ class Listener(Configurable):
 
     @staticmethod
     def record_position():
-        pos = tuple('{:.3f}'.format(round(i, 3)) for i in config.player_pos)
+        location = config.game.get_player_location()
         now = datetime.now().strftime('%I:%M:%S %p')
-        config.gui.edit.record.add_entry(now, pos)
-        print(f'\n[~] Recorded position ({pos[0]}, {pos[1]}) at {now}')
+        # config.gui.edit.record.add_entry(now, location)
+        print(f'\n[~] Recorded position ({location}) at {now}')
         time.sleep(0.6)

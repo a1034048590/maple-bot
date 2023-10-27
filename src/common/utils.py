@@ -257,3 +257,28 @@ def async_callback(context, function, *args, **kwargs):
         task.start()
         context.after(100, task.process_queue(context))
     return f
+
+
+def convert_image(img1, img2):
+    """通过 OpenCV 比较两个 Numpy 类型的图像得到图像1在图像2的相对位置"""
+    # 使用 OpenCV 的模板匹配方法进行图像比较
+    result = cv2.matchTemplate(img2, img1, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    # 获取图像1的高度和宽度
+    h, w = img1.shape[:2]
+
+    # 计算图像1在图像2中的相对位置
+    top = max_loc[1]
+    left = max_loc[0]
+    bottom = top + h
+    right = left + w
+
+    return top, left, bottom, right
+
+
+def show_image(image, name="image"):
+    """使用 OpenCV 展示图像"""
+    cv2.imshow('image', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

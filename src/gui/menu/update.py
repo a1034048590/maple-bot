@@ -1,4 +1,4 @@
-import git
+# import git
 import tkinter as tk
 from src.common import config
 from src.gui.interfaces import MenuBarItem, LabelFrame, Frame
@@ -84,20 +84,21 @@ class UpdatePrompt(tk.Toplevel):
         self._close()
 
     def _refresh_display(self):
-        self.list_var.set(['Searching for local changes...'])
-        self.update()
-        repo = git.Repo(self.path)
-        diffs = []
-        paths = set()
-        for item in repo.index.diff(None) + repo.index.diff('HEAD'):        # Unstaged and staged changes
-            path = item.a_path
-            if path not in paths:       # Only show changes once per file, unstaged has precedence over staged
-                diffs.append(f'{item.change_type} - {path}')
-                paths.add(path)
-        self.dirty = len(diffs) > 0
-        if len(diffs) == 0:
-            diffs.append('No local changes found, safe to update')
-        self.list_var.set(diffs)
+        pass
+        # self.list_var.set(['Searching for local changes...'])
+        # self.update()
+        # repo = git.Repo(self.path)
+        # diffs = []
+        # paths = set()
+        # for item in repo.index.diff(None) + repo.index.diff('HEAD'):        # Unstaged and staged changes
+        #     path = item.a_path
+        #     if path not in paths:       # Only show changes once per file, unstaged has precedence over staged
+        #         diffs.append(f'{item.change_type} - {path}')
+        #         paths.add(path)
+        # self.dirty = len(diffs) > 0
+        # if len(diffs) == 0:
+        #     diffs.append('No local changes found, safe to update')
+        # self.list_var.set(diffs)
 
     def _close(self):
         self.destroy()
