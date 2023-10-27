@@ -1,4 +1,4 @@
-from interception.stroke import key_stroke
+from src.common.interception import key_stroke
 import time
 
 # Scancodes for arrow and alphanumeric/modifier keys should be separated. They have different key-states.

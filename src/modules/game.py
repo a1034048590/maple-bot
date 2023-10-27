@@ -1,4 +1,4 @@
-import gdi_capture
+from src.common import gdi_capture
 import numpy as np
 
 # These are colors taken from the mini-map in BGRA format.

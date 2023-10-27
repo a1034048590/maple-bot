@@ -1,1 +1,0 @@
-from gdi_capture.gdi_capture import find_window_from_executable_name, CaptureWindow

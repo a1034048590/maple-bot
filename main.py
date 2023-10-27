@@ -1,9 +1,13 @@
-import time
 import random
+
 from rune_solver import find_arrow_directions
-from interception import *
-from game import Game
-from player import Player
+
+import time
+from src.modules.bot import Bot
+from src.modules.capture import Capture
+from src.modules.notifier import Notifier
+from src.modules.listener import Listener
+from src.modules.gui import GUI
 
 
 def bind(context):
@@ -17,6 +21,7 @@ def bind(context):
             c.set_filter(interception.is_keyboard, 0)
             break
     return device
+
 
 def solve_rune(g, p, target):
     """
@@ -56,42 +61,62 @@ def solve_rune(g, p, target):
                 print("Trying again...")
 
 
-if __name__ == "__main__":
-    # This setup is required for Interception to mimic your keyboard.
-    c = interception()
-    d = bind(c)
+if __name__ == '__main__':
+    bot = Bot()
+    capture = Capture()
+    listener = Listener()
 
-    # Example Script for Hayato @ SS4.
-    g = Game((5, 60, 180, 130))
-    p = Player(c, d, g)
-    target = (97, 32.5)
+    bot.start()
+    while not bot.ready:
+        time.sleep(0.01)
 
-    while True:
-        other_location = g.get_other_location()
-        if other_location > 0:
-            print("A player has entered your map.")
+    capture.start()
+    while not capture.ready:
+        time.sleep(0.01)
 
-        rune_location = g.get_rune_location()
-        if rune_location is not None:
-            print("A rune has appeared.")
-            solve_rune(g, p, rune_location)
+    listener.start()
+    while not listener.ready:
+        time.sleep(0.01)
 
-        print("Running...")
-        p.go_to(target)
-        p.press("Q")
-        time.sleep(0.5)
-        p.press("W")
-        time.sleep(3)
-        p.go_to(target)
-        p.press("LEFT")
-        time.sleep(0.5)
-        p.hold("E")
-        time.sleep(0.5)
-        p.release("E")
-        p.go_to(target)
-        p.press("RIGHT")
-        time.sleep(0.5)
-        p.hold("E")
-        time.sleep(0.5)
-        p.release("E")
-        time.sleep(3)
+    gui = GUI()
+    gui.start()
+
+# if __name__ == "__main__":
+#     # This setup is required for Interception to mimic your keyboard.
+#     c = interception()
+#     d = bind(c)
+#
+#     # Example Script for Hayato @ SS4.
+#     g = Game((5, 60, 180, 130))
+#     p = Player(c, d, g)
+#     target = (97, 32.5)
+#
+#     while True:
+#         other_location = g.get_other_location()
+#         if other_location > 0:
+#             print("A player has entered your map.")
+#
+#         rune_location = g.get_rune_location()
+#         if rune_location is not None:
+#             print("A rune has appeared.")
+#             solve_rune(g, p, rune_location)
+#
+#         print("Running...")
+#         p.go_to(target)
+#         p.press("Q")
+#         time.sleep(0.5)
+#         p.press("W")
+#         time.sleep(3)
+#         p.go_to(target)
+#         p.press("LEFT")
+#         time.sleep(0.5)
+#         p.hold("E")
+#         time.sleep(0.5)
+#         p.release("E")
+#         p.go_to(target)
+#         p.press("RIGHT")
+#         time.sleep(0.5)
+#         p.hold("E")
+#         time.sleep(0.5)
+#         p.release("E")
+#         time.sleep(3)

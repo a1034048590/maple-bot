@@ -1,6 +1,4 @@
 from ctypes import *
-from interception.stroke import *
-
 
 MAX_DEVICES = 20
 MAX_KEYBOARD = 10
