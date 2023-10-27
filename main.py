@@ -4,6 +4,7 @@ import random
 
 import time
 
+from src.command_book.bishop import Bishop
 from src.common.interception import interception_filter_key_state
 from src.common.interception.interception import Interception
 from src.modules.bot import Bot
@@ -85,11 +86,19 @@ if __name__ == '__main__':
     game = Game()
     c = Interception()
     d = bind(c)
-    player = Player(c, d, game)
+    player = Bishop(c, d, game)
 
     listener.start()
     while not listener.ready:
         time.sleep(0.01)
+
+    while True:
+        # target = (47, 30)
+        targets = [(52, 70), (79, 17)]
+        print(game.get_player_location())
+        for target in targets:
+            player.go_to(target)
+        time.sleep(0.5)
 
     # gui = GUI()
     # gui.start()

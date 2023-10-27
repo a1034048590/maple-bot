@@ -93,8 +93,10 @@ class Game:
         # location = self.locate(PLAYER_BGRA)
         # return location[0] if len(location) > 0 else None
         self.minimap = self.get_minimap()
+        # show_image(self.minimap)
         player = utils.multi_match(self.minimap, PLAYER_TEMPLATE, threshold=0.8)
-        return player
+        if player:
+            return player[0]
 
     def get_rune_location(self):
         """
@@ -119,6 +121,7 @@ class Game:
         # with gdi_capture.CaptureWindow(self.hwnd) as frame:
         if frame is None:
             print("MapleStory.exe was not found.")
+            return None
         else:
             tl, _ = utils.single_match(frame, MM_TL_TEMPLATE)
             _, br = utils.single_match(frame, MM_BR_TEMPLATE)
@@ -134,5 +137,5 @@ class Game:
 
             minimap_sample = frame[mm_tl[1]:mm_br[1], mm_tl[0]:mm_br[0]]
             self.minimap = minimap_sample
-        return minimap_sample
+            return minimap_sample
         # return convert_image(minimap_img, img)

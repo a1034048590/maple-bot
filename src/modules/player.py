@@ -16,7 +16,7 @@ SC_DECIMAL = {
 
 # Change these to your own settings.
 JUMP_KEY = "ALT"
-ROPE_LIFT_KEY = "D"
+ROPE_LIFT_KEY = "Q"
 
 
 class Player:
@@ -58,7 +58,7 @@ class Player:
         else:
             self.context.send(self.device, key_stroke(SC_DECIMAL[key], 0, 0))
 
-    @utils.run_if_enabled
+    # @utils.run_if_enabled
     def go_to(self, target):
         """
         Attempts to move player to a specific (x, y) location on the screen.
@@ -84,15 +84,13 @@ class Player:
                     break
                 # Player is above target y-position.
                 elif y1 < y2:
-                    self.hold("DOWN")
-                    self.press(JUMP_KEY)
+                    self.to_down()
                 # Player is below target y-position.
                 else:
                     if y1 - y2 > 30:
                         self.press(ROPE_LIFT_KEY)
                     else:
-                        self.press("UP")
-                        self.press("UP")
+                        self.to_top()
                 # Delay for player falling down or jumping up.
                 time.sleep(1)
             else:
@@ -103,5 +101,17 @@ class Player:
                 else:
                     self.hold("LEFT")
                 if abs(x2 - x1) > 30:
-                    self.press(JUMP_KEY)
-                    self.press(JUMP_KEY)
+                    self.flash_jump()
+        print(f"到达目标{target}")
+
+    def to_down(self):
+        self.hold("DOWN")
+        self.press(JUMP_KEY)
+
+    def to_top(self):
+        self.press("UP")
+        self.press("UP")
+
+    def flash_jump(self):
+        self.press(JUMP_KEY)
+        self.press(JUMP_KEY)

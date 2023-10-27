@@ -4,3 +4,4 @@ opencv-python
 Pillow
 pygame
 pywin32
+mss
