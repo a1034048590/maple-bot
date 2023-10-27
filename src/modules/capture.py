@@ -9,6 +9,9 @@ import mss.windows
 import numpy as np
 from src.common import config, utils
 from ctypes import wintypes
+
+from src.common.utils import show_image
+
 user32 = ctypes.windll.user32
 user32.SetProcessDPIAware()
 
@@ -92,6 +95,9 @@ class Capture:
                 self.frame = self.screenshot()
             if self.frame is None:
                 continue
+
+            # show_image(self.frame)
+
             tl, _ = utils.single_match(self.frame, MM_TL_TEMPLATE)
             _, br = utils.single_match(self.frame, MM_BR_TEMPLATE)
             mm_tl = (
@@ -118,7 +124,6 @@ class Capture:
 
                     # Crop the frame to only show the minimap
                     minimap = self.frame[mm_tl[1]:mm_br[1], mm_tl[0]:mm_br[0]]
-
                     # Determine the player's position
                     player = utils.multi_match(minimap, PLAYER_TEMPLATE, threshold=0.8)
                     if player:

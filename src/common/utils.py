@@ -279,6 +279,6 @@ def convert_image(img1, img2):
 
 def show_image(image, name="image"):
     """使用 OpenCV 展示图像"""
-    cv2.imshow('image', image)
+    cv2.imshow(name, image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

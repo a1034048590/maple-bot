@@ -1,6 +1,6 @@
 keyboard
 numpy
-opencv-python-headless
+opencv-python
 Pillow
 pygame
 pywin32

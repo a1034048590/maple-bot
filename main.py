@@ -78,9 +78,9 @@ if __name__ == '__main__':
     while not bot.ready:
         time.sleep(0.01)
 
-    capture.start()
-    while not capture.ready:
-        time.sleep(0.01)
+    # capture.start()
+    # while not capture.ready:
+    #     time.sleep(0.01)
 
     game = Game()
     c = Interception()
