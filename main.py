@@ -91,8 +91,8 @@ if __name__ == '__main__':
     while not listener.ready:
         time.sleep(0.01)
 
-    gui = GUI()
-    gui.start()
+    # gui = GUI()
+    # gui.start()
 
 # if __name__ == "__main__":
 #     # This setup is required for Interception to mimic your keyboard.

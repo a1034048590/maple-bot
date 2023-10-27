@@ -83,15 +83,18 @@ class Game:
                 y_pos = sum_y / count
                 locations.append((x_pos, y_pos))
         show_image(img_cropped)
-        # TODO 无法找色问题
+        # TODO 找色失败问题
         return locations
 
     def get_player_location(self):
         """
         Returns the (x, y) position of the player on the mini-map.
         """
-        location = self.locate(PLAYER_BGRA)
-        return location[0] if len(location) > 0 else None
+        # location = self.locate(PLAYER_BGRA)
+        # return location[0] if len(location) > 0 else None
+        self.minimap = self.get_minimap()
+        player = utils.multi_match(self.minimap, PLAYER_TEMPLATE, threshold=0.8)
+        return player
 
     def get_rune_location(self):
         """
@@ -132,4 +135,4 @@ class Game:
             minimap_sample = frame[mm_tl[1]:mm_br[1], mm_tl[0]:mm_br[0]]
             self.minimap = minimap_sample
         return minimap_sample
-            # return convert_image(minimap_img, img)
+        # return convert_image(minimap_img, img)

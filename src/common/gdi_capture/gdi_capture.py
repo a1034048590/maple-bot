@@ -43,7 +43,7 @@ class CaptureWindow:
         gdi_capture_dll.FreeBitmapHandle(ctypes.wintypes.HBITMAP(self.bitmap_handle))
 
     def screenshot(self):
-        self.free()
+        # self.free()
 
         width = ctypes.c_long()
         height = ctypes.c_long()
@@ -57,7 +57,7 @@ class CaptureWindow:
         return np.ctypeslib.as_array(bitmap_ptr, shape=(height.value, width.value, 4))
 
     def free(self):
-        """释放截图空间"""
+        """释放内存空间"""
         if not hasattr(self, "bitmap_handle") or self.bitmap_handle is None:
             return
         gdi_capture_dll.FreeBitmapHandle(ctypes.wintypes.HBITMAP(self.bitmap_handle))
