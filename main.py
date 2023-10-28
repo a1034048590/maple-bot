@@ -86,18 +86,20 @@ if __name__ == '__main__':
     game = Game()
     c = Interception()
     d = bind(c)
-    player = Bishop(c, d, game)
+    player = Player(c, d, game)
 
     listener.start()
     while not listener.ready:
         time.sleep(0.01)
 
     while True:
-        # target = (47, 30)
-        targets = [(52, 70), (79, 17)]
-        print(game.get_player_location())
+        # target = (60, 46) (82, 37)(125, 46) (125, 21) (36, 27) (33, 38) (20, 47) (20, 63) (55, 63) (96, 63) (126, 63)
+        targets = [(130, 63), (10, 63), (25, 47), (55, 27), (98, 37), (75, 63)]
         for target in targets:
+            print(f"goto:{target}")
             player.go_to(target)
+            time.sleep(0.02)
+            # player.press("CTRL")
         time.sleep(0.5)
 
     # gui = GUI()

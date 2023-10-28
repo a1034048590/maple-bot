@@ -38,7 +38,8 @@ class Record(LabelFrame):
         if len(self.entries) > Record.MAX_SIZE:
             self.entries.pop()
         self.entries.insert(0, (time, location))
-        self.display_var.set(tuple(f'{x[0]}  -  ({x[1][0]}, {x[1][1]})' for x in self.entries))
+        # self.display_var.set(tuple(f'{x[0]}  -  ({x[1][0]}, {x[1][1]})' for x in self.entries))
+        self.display_var.set(tuple(f'{x[0]}  -  ({x[1]})' for x in self.entries))
         self.listbox.see(0)
 
     def on_select(self, e):

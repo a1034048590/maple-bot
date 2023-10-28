@@ -17,6 +17,7 @@ SC_DECIMAL = {
 # Change these to your own settings.
 JUMP_KEY = "ALT"
 ROPE_LIFT_KEY = "Q"
+ATTACK = "CTRL"
 
 
 class Player:
@@ -71,6 +72,10 @@ class Player:
             x1, y1 = player_location
             x2, y2 = target
 
+            print(f"player_location:{player_location}")
+            print(f"target:{target}")
+
+
             """
             There are delays between taking a screenshot, processing the image, sending the key press, and game server ping.
             Player should be within 2 pixels of x-destination and 7 pixels of y-destination.
@@ -102,16 +107,28 @@ class Player:
                     self.hold("LEFT")
                 if abs(x2 - x1) > 30:
                     self.flash_jump()
-        print(f"到达目标{target}")
 
     def to_down(self):
         self.hold("DOWN")
+        time.sleep(0.2)
         self.press(JUMP_KEY)
+        time.sleep(0.2)
+        self.attack()
 
     def to_top(self):
+        self.press(JUMP_KEY)
         self.press("UP")
         self.press("UP")
+        time.sleep(0.2)
+        self.attack()
+        # time.sleep(0.2)
 
     def flash_jump(self):
         self.press(JUMP_KEY)
         self.press(JUMP_KEY)
+        self.attack()
+
+    def attack(self):
+        self.hold(ATTACK)
+        time.sleep(0.2)
+        self.release(ATTACK)

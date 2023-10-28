@@ -106,6 +106,6 @@ class Listener(Configurable):
     def record_position():
         location = config.game.get_player_location()
         now = datetime.now().strftime('%I:%M:%S %p')
-        # config.gui.edit.record.add_entry(now, location)
+        config.gui.edit.record.add_entry(now, location)
         print(f'\n[~] Recorded position ({location}) at {now}')
         time.sleep(0.6)
