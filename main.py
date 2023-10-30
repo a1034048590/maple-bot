@@ -3,6 +3,7 @@ import random
 # from rune_solver import find_arrow_directions
 
 import time
+from typing import List
 
 from src.command_book.bishop import Bishop
 from src.common.interception import interception_filter_key_state
@@ -74,39 +75,42 @@ def test_go_to():
     player.go_to((23, 50), 0.2, (27, 50))
 
 
+def random_targets(target: List):
+
+
 if __name__ == '__main__':
-    test_go_to()
-    # bot = Bot()
-    # capture = Capture()
-    # notifier = Notifier()
-    # listener = Listener()
-    #
-    # bot.start()
-    # while not bot.ready:
+    # test_go_to()
+    bot = Bot()
+    capture = Capture()
+    notifier = Notifier()
+    listener = Listener()
+
+    bot.start()
+    while not bot.ready:
+        time.sleep(0.01)
+
+    # capture.start()
+    # while not capture.ready:
     #     time.sleep(0.01)
-    #
-    # # capture.start()
-    # # while not capture.ready:
-    # #     time.sleep(0.01)
-    #
-    # game = Game()
-    # c = Interception()
-    # d = bind(c)
-    # player = Player(c, d, game)
-    #
-    # listener.start()
-    # while not listener.ready:
-    #     time.sleep(0.01)
-    #
-    # while True:
-    #     # target = (60, 46) (82, 37)(125, 46) (125, 21) (36, 27) (33, 38) (20, 47) (20, 63) (55, 63) (96, 63) (126, 63)
-    #     targets = [(130, 63), (10, 63), (25, 47), (55, 27), (98, 37), (75, 63)]
-    #     for target in targets:
-    #         print(f"goto:{target}")
-    #         player.go_to(target)
-    #         time.sleep(0.02)
-    #         # player.press("CTRL")
-    #     time.sleep(0.5)
+
+    game = Game()
+    c = Interception()
+    d = bind(c)
+    player = Player(c, d, game)
+
+    listener.start()
+    while not listener.ready:
+        time.sleep(0.01)
+
+    while True:
+        # target = (60, 46) (82, 37)(125, 46) (125, 21) (36, 27) (33, 38) (20, 47) (20, 63) (55, 63) (96, 63) (126, 63)
+        targets = [(130, 63), (10, 63), (25, 47), (55, 27), (98, 37), (75, 63)]
+        target = random.choice(targets)
+        player.go_to(target)
+        # 随机goto
+        print(f"goto:{target}")
+        # for target in targets:
+        # player.press("CTRL")
 
     # gui = GUI()
     # gui.start()
