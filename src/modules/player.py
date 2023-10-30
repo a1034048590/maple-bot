@@ -17,7 +17,7 @@ SC_DECIMAL = {
 # Change these to your own settings.
 JUMP_KEY = "ALT"
 ROPE_LIFT_KEY = "Q"
-ATTACK = "CTRL"
+ATTACK = "A"
 
 
 class Player:
@@ -60,12 +60,12 @@ class Player:
             self.context.send(self.device, key_stroke(SC_DECIMAL[key], 0, 0))
 
     # @utils.run_if_enabled
-    def go_to(self, target):
+    def go_to(self, target, delay=0.2, player_location=None):
         """
         Attempts to move player to a specific (x, y) location on the screen.
         """
         while True:
-            player_location = self.game.get_player_location()
+            player_location = player_location or self.game.get_player_location()
             if player_location is None:
                 continue
 
@@ -74,7 +74,6 @@ class Player:
 
             print(f"player_location:{player_location}")
             print(f"target:{target}")
-
 
             """
             There are delays between taking a screenshot, processing the image, sending the key press, and game server ping.
@@ -107,6 +106,7 @@ class Player:
                     self.hold("LEFT")
                 if abs(x2 - x1) > 30:
                     self.flash_jump()
+            time.sleep(delay)
 
     def to_down(self):
         self.hold("DOWN")

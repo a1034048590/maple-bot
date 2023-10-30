@@ -46,7 +46,6 @@ class Game:
         if region:
             pass
         self.minimap = self.get_minimap()
-        print(f"player:{self.get_player_location()}")
 
     def get_rune_image(self):
         """
