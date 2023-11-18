@@ -92,6 +92,7 @@ class Player:
                     self.to_down()
                 # Player is below target y-position.
                 else:
+                    # if y1 - y2 > 15:
                     if y1 - y2 > 30:
                         self.press(ROPE_LIFT_KEY)
                     else:
@@ -105,11 +106,16 @@ class Player:
                 # Player is to the right of target x-position.
                 else:
                     self.hold("LEFT")
+                # if abs(x2 - x1) > 15:
                 if abs(x2 - x1) > 30:
                     self.flash_jump()
+            # time.sleep(0.2)
+            # self.attack()
 
     def to_down(self):
         self.hold("DOWN")
+        time.sleep(0.2)
+        self.press(JUMP_KEY)
         time.sleep(0.2)
         self.press(JUMP_KEY)
         time.sleep(0.2)

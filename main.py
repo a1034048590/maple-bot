@@ -79,9 +79,9 @@ if __name__ == '__main__':
     while not bot.ready:
         time.sleep(0.01)
 
-    # capture.start()
-    # while not capture.ready:
-    #     time.sleep(0.01)
+    capture.start()
+    while not capture.ready:
+        time.sleep(0.01)
 
     game = Game()
     c = Interception()
@@ -94,16 +94,17 @@ if __name__ == '__main__':
 
     while True:
         # target = (60, 46) (82, 37)(125, 46) (125, 21) (36, 27) (33, 38) (20, 47) (20, 63) (55, 63) (96, 63) (126, 63)
-        targets = [(130, 63), (10, 63), (25, 47), (55, 27), (98, 37), (75, 63)]
+        # 图书馆
+        targets = [(140, 52), (82, 52), (20, 52), (49, 19), (100, 36), (100, 19), (129, 16)]
+        # targets = [(130, 63), (10, 63), (25, 47), (55, 27), (98, 37), (75, 63)]
         for target in targets:
             print(f"goto:{target}")
             player.go_to(target)
-            time.sleep(0.02)
+            time.sleep(0.05)
             # player.press("CTRL")
-        time.sleep(0.5)
 
-    # gui = GUI()
-    # gui.start()
+    gui = GUI()
+    gui.start()
 
 # if __name__ == "__main__":
 #     # This setup is required for Interception to mimic your keyboard.
