@@ -7,7 +7,7 @@ import win32gui
 from ppocronnx import TextSystem
 from cnocr import CnOcr
 
-from ocr import show_image
+from auto_cube import show_image
 
 is_running = True
 
