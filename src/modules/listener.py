@@ -11,7 +11,7 @@ from datetime import datetime
 
 class Listener(Configurable):
     DEFAULT_CONFIG = {
-        'Start/stop': 'insert',
+        'Start/stop': 'f5',
         'Reload routine': 'f6',
         'Record position': 'f7'
     }
@@ -47,6 +47,8 @@ class Listener(Configurable):
         self.ready = True
         while True:
             if self.enabled:
+                print(kb.is_pressed(self.config['Start/stop']))
+                print((self.config['Start/stop']))
                 if kb.is_pressed(self.config['Start/stop']):
                     Listener.toggle_enabled()
                 elif kb.is_pressed(self.config['Reload routine']):

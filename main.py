@@ -12,7 +12,7 @@ from src.modules.bot import Bot
 from src.modules.capture import Capture
 from src.modules.game import Game
 from src.modules.notifier import Notifier
-from src.modules.listener import Listener
+from src.modules.Listener import Listener
 from src.modules.gui import GUI
 from src.modules.player import Player
 

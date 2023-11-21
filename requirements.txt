@@ -6,3 +6,4 @@ pygame
 pywin32
 mss
 ppocr-onnx
+pyautogui

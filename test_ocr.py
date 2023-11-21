@@ -4,6 +4,10 @@ import time
 
 import numpy as np
 import win32gui
+from ppocronnx import TextSystem
+from cnocr import CnOcr
+
+from ocr import show_image
 
 is_running = True
 
@@ -53,7 +57,7 @@ def get_relative_mouse_position():
     # 示例用法
 
     # 启动主脚本
-    # main_script()
+    main_script()
 
 
 def init_hwnd():
@@ -76,37 +80,53 @@ def init_hwnd():
 
 
 if __name__ == '__main__':
-    init_hwnd()
-
-    screenshot = pyautogui.screenshot()
-    image = np.array(screenshot)
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-
-    # 指定裁剪区域的坐标
-    left, top, right, bottom = 565, 433, 729, 476
-
-    # 裁剪图像为指定区域
-    region_image = image[top:bottom, left:right]
-
-    # 按行截取图像区域
-    line1 = region_image[0:15, :]
-    line2 = region_image[15:30, :]
-    line3 = region_image[30:bottom - top, :]
-    # 创建窗口并展示图像
-    cv2.namedWindow("region_image ", cv2.WINDOW_NORMAL)
-    cv2.imshow("region_image", region_image)
-    # 创建窗口并展示图像
-    cv2.namedWindow("Line 1", cv2.WINDOW_NORMAL)
-    cv2.imshow("Line 1", line1)
-
-    cv2.namedWindow("Line 2", cv2.WINDOW_NORMAL)
-    cv2.imshow("Line 2", line2)
-
-    cv2.namedWindow("Line 3", cv2.WINDOW_NORMAL)
-    cv2.imshow("Line 3", line3)
-    # 等待按键事件，按下任意键后关闭窗口
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # init_hwnd()
+    # # main_script()
+    # screenshot = pyautogui.screenshot()
+    # image = np.array(screenshot)
+    # image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    #
+    # # 指定裁剪区域的坐标
+    # left, top, right, bottom = 608, 463, 774, 508
+    #
+    # # 裁剪图像为指定区域
+    # region_image = image[top:bottom, left:right]
+    # line_width = 15
+    # # 按行截取图像区域
+    # line1 = region_image[0:line_width, :]
+    # line2 = region_image[line_width:line_width * 2, :]
+    # line3 = region_image[line_width * 2:bottom - top, :]
+    # show_image(region_image)
+    img_fp = "test3.png"
+    ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='db_shufflenet_v2_small',
+                det_more_configs={'rotated_bbox': False})
+    out1 = ocr.ocr_for_single_line(img_fp)
+    print(out1)
+    img_fp = "test.png"
+    out2 = ocr.ocr(img_fp)
+    print(out2)
+    # lines = [line1, line2, line3]
+    # print(text_ocr.detect_and_ocr(region_image))
+    # for line in lines:
+    #     text = text_ocr.ocr_single_line(line)
+    #     show_image(line)
+    #     print(text)
+    #     print(text[0])
+    # # 创建窗口并展示图像
+    # cv2.namedWindow("region_image ", cv2.WINDOW_NORMAL)
+    # cv2.imshow("region_image", region_image)
+    # # 创建窗口并展示图像
+    # cv2.namedWindow("Line 1", cv2.WINDOW_NORMAL)
+    # cv2.imshow("Line 1", line1)
+    #
+    # cv2.namedWindow("Line 2", cv2.WINDOW_NORMAL)
+    # cv2.imshow("Line 2", line2)
+    #
+    # cv2.namedWindow("Line 3", cv2.WINDOW_NORMAL)
+    # cv2.imshow("Line 3", line3)
+    # # 等待按键事件，按下任意键后关闭窗口
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     # 按行截取图像区域
     # line1 = region_image[0:15, :]
