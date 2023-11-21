@@ -5,3 +5,4 @@ Pillow
 pygame
 pywin32
 mss
+ppocr-onnx

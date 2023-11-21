@@ -1,13 +1,11 @@
 """
 A collection of variables shared across multiple modules.
-线程交互参数
 """
 
 #########################
 #       Constants       #
 #########################
 RESOURCES_DIR = 'resources'
-
 
 #################################
 #       Global Variables        #
@@ -24,9 +22,9 @@ stage_fright = False
 # Represents the current shortest path that the bot is taking
 path = []
 
-
 #############################
 #       Shared Modules      #
+#        线程交互参数       #
 #############################
 # A Routine object that manages the 'machine code' of the current routine
 routine = None

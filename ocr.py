@@ -4,9 +4,10 @@ import cv2
 import numpy as np
 import pyautogui
 
-from cnocr import CnOcr
+from ppocronnx.predict_system import TextSystem
 import time
 import win32gui
+
 
 def is_repeated_n_times(string, char, n):
     count = string.count(char)
@@ -30,15 +31,15 @@ def check_result(result, wanna_result=None, same_line=2):
     return False
 
 
-def cube_one(cn_ocr):
-    pyautogui.leftClick(389, 458)  # 单击
+def cube_one(test_ocr):
+    pyautogui.leftClick(633, 514)  # 单击 再使用一次魔方
     pyautogui.press("enter", 3, 0.02)
-    result_l, result_t, result_r, result_b = 324, 373, 491, 416
+    result_l, result_t, result_r, result_b = 565, 433, 729, 476
     time.sleep(2)
-    return recognize_text_in_screen_region(cn_ocr, result_l, result_t, result_r, result_b);
+    return recognize_text_in_screen_region(test_ocr, result_l, result_t, result_r, result_b)
 
 
-def recognize_text_in_screen_region(cn_ocr, left, top, right, bottom):
+def recognize_text_in_screen_region(text_ocr, left, top, right, bottom):
     # 捕获屏幕区域图像
     screenshot = pyautogui.screenshot()
     image = np.array(screenshot)
@@ -46,18 +47,36 @@ def recognize_text_in_screen_region(cn_ocr, left, top, right, bottom):
 
     # 裁剪图像为指定区域
     region_image = image[top:bottom, left:right]
-
-    # 进行文字识别
-    text = cn_ocr.ocr(region_image)
-    result = ''
-    for t in text:
-        result += t.get('text') + ';'
+    # 按行截图
+    line1 = region_image[0:15, :]
+    line2 = region_image[15:30, :]
+    line3 = region_image[30:bottom - top, :]
+    # 显示图像
+    lines = [line1, line2, line3]
+    result = ""
+    show_image(region_image)
+    for line in lines:
+        # 进行文字识别
+        show_image(line)
+        text = text_ocr.ocr_single_line(line)
+        print(line)
+        for t in text:
+            result += t[0] + ';'
+    print(result)
     return result
 
 
-def auto_cube(cn_ocr: CnOcr, wanna_result: List, same_line):
+def show_image(img):
+    # 创建窗口并展示图像
+    cv2.namedWindow("img ", cv2.WINDOW_NORMAL)
+    cv2.imshow("img", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def auto_cube(text_ocr: TextSystem, wanna_result: List, same_line):
     while True:
-        if check_result(cube_one(cn_ocr), wanna_result, same_line):
+        if check_result(cube_one(text_ocr), wanna_result, same_line):
             exit()
         time.sleep(2)
 
@@ -83,7 +102,7 @@ def init_hwnd():
 
 if __name__ == '__main__':
     # DEBUG 力量无法识别 ->力里
-    ocr = CnOcr()
+    text_ocr = TextSystem()
     init_hwnd()
-    auto_cube(ocr, ["敏捷", "力量", "最大血", "智力", "运气", "所有"], 3)
+    auto_cube(text_ocr, ["敏捷", "力量", "最大血", "智力", "运气", "所有"], 3)
     # check_result("敏捷：+7%;智力:+16;角色每10级敏捷：+1")

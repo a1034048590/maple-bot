@@ -96,12 +96,12 @@ if __name__ == '__main__':
     while True:
         # target = (60, 46) (82, 37)(125, 46) (125, 21) (36, 27) (33, 38) (20, 47) (20, 63) (55, 63) (96, 63) (126, 63)
         targets = [(130, 63), (10, 63), (25, 47), (55, 27), (98, 37), (75, 63)]
-        for target in targets:
-            print(f"goto:{target}")
-            player.go_to(target)
-            time.sleep(0.02)
-            # player.press("CTRL")
-        time.sleep(0.5)
+        target = random.choice(targets)
+        player.go_to(target)
+        # 随机goto
+        print(f"goto:{target}")
+        # for target in targets:
+        # player.press("CTRL")
 
     # gui = GUI()
     # gui.start()
