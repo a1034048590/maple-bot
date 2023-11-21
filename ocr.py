@@ -60,8 +60,7 @@ def recognize_text_in_screen_region(text_ocr, left, top, right, bottom):
         show_image(line)
         text = text_ocr.ocr_single_line(line)
         print(line)
-        for t in text:
-            result += t[0] + ';'
+        result += str(text[0]) + ';'
     print(result)
     return result
 
