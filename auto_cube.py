@@ -129,7 +129,7 @@ def auto_cube(ocr, wanna_result: List):
         result = recognize_text_in_screen_region(ocr, LEFT, TOP, RIGHT, BOTTOM)
         if check_result1(result, wanna_result):
             config.enabled = False
-        time.sleep(0.5)
+        time.sleep(1)
 
 
 def init_hwnd():
@@ -159,11 +159,12 @@ if __name__ == '__main__':
     while not listener.ready:
         time.sleep(0.01)
     listener.enabled = True
-    wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-                    ["力量", "力量", "力量"], ["所有", "所有", "所有"]]
+    # wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
+    #                 ["力量", "力量", "力量"], ["所有", "所有", "所有"]]
     #
     # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     #                 ["力量", "力量"], ["所有", "所有"]]
+    wanna_result = [["敏捷", "敏捷", "敏捷"]]
     auto_cube(cn_ocr, wanna_result)
     # config.enabled = True
     # t1 = time.time()
