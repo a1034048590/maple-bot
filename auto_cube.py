@@ -4,6 +4,7 @@ import cv2
 import keyboard as kb
 import numpy as np
 import pyautogui
+import requests
 
 from cnocr import CnOcr
 import time
@@ -16,6 +17,7 @@ from src.modules.myListener import Listener
 MOUSE_X, MOUSE_Y = 662, 548
 LEFT, TOP, RIGHT, BOTTOM = 608, 463, 774, 508
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
+MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
 
 
 def is_repeated_n_times(string, char, n):
@@ -129,6 +131,7 @@ def auto_cube(ocr, wanna_result: List):
         result = recognize_text_in_screen_region(ocr, LEFT, TOP, RIGHT, BOTTOM)
         if check_result1(result, wanna_result):
             config.enabled = False
+            miao_tixing(f"洗出来了！结果：{result}")
         time.sleep(1)
 
 
@@ -147,6 +150,27 @@ def init_hwnd():
         print("窗口未找到，5秒后继续查找")
         time.sleep(5)
         init_hwnd()
+
+
+def miao_tixing(msg):
+    ts = str(time.time())  # 时间戳
+
+    type = 'json'  # 返回内容格式
+
+    request_url = "http://miaotixing.com/trigger?"
+
+    # 伪装一个浏览器头发送请求（反爬的一个习惯操作，实际上不加请求头伪装也可以使用）
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.67 Safari/537.36 Edg/87.0.664.47'}
+
+    response = requests.post(request_url + "id=" + MIAO_CODE + "&text=" + msg + "&ts=" + ts + "&type=" + type,
+                             headers=headers)
+
+    if response.status_code == 200:
+        result = response.json()
+        print(result)
+    else:
+        print("请求失败")
 
 
 if __name__ == '__main__':
