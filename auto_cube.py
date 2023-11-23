@@ -1,21 +1,19 @@
-from typing import List, Dict
+from typing import List
+import time
 
+from cnocr import CnOcr
+import win32gui
 import cv2
-import keyboard as kb
 import numpy as np
 import pyautogui
 import requests
-
-from cnocr import CnOcr
-import time
-import win32gui
 
 from src.common import config
 from src.common.utils import run_if_enabled
 from src.modules.myListener import Listener
 
-MOUSE_X, MOUSE_Y = 662, 548
-LEFT, TOP, RIGHT, BOTTOM = 608, 463, 774, 508
+MOUSE_X, MOUSE_Y = 662, 543  # 再来一次魔方相对坐标
+LEFT, TOP, RIGHT, BOTTOM = 608, 458, 774, 503  # 魔方结果相对坐标
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
 MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
 
@@ -23,24 +21,6 @@ MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒�
 def is_repeated_n_times(string, char, n):
     count = string.count(char)
     return count == n
-
-
-@run_if_enabled
-def check_result(result, wanna_result=None, same_line=2):
-    if result:
-        result.replace("力里", "力量")
-        result.replace("力童", "力量")
-        if wanna_result is None:
-            wanna_result = ['敏捷']
-        for wanna in wanna_result:
-            if is_repeated_n_times(result, wanna, same_line):
-                print(f"出现想要结果:{wanna}x{same_line}:结果为：{result}")
-                return True
-            if is_repeated_n_times(result, wanna, 2) and is_repeated_n_times(result, "所有", 1):
-                print(f"出现想要结果:{result}")
-                return True
-    print(f"未出现想要结果 当前结果：{result}")
-    return False
 
 
 @run_if_enabled
@@ -87,31 +67,42 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
 
 
 @run_if_enabled
-def cube_one():
-    pyautogui.leftClick(MOUSE_X, MOUSE_Y)  # 单击 再使用一次魔方
+def cube_one(hwnd):
+    window_rect = win32gui.GetWindowRect(hwnd)
+    window_left, window_top, _, _ = window_rect
+    print(window_rect)
+    pyautogui.leftClick(MOUSE_X + window_left, MOUSE_Y + window_top)  # 单击 再使用一次魔方
     pyautogui.press("enter", 3, 0.02)
     time.sleep(2)
 
 
-def recognize_text_in_screen_region(ocr, left, top, right, bottom):
+def recognize_text_in_screen_region(ocr, hwnd, left, top, right, bottom):
+    # 获取窗口位置
+    window_rect = win32gui.GetWindowRect(hwnd)
+    window_left, window_top, _, _ = window_rect
+
     # 捕获屏幕区域图像
     screenshot = pyautogui.screenshot()
     image = np.array(screenshot)
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
+    # 计算相对坐标
+    region_left = window_left + left
+    region_top = window_top + top
+    region_right = window_left + right
+    region_bottom = window_top + bottom
+
     # 裁剪图像为指定区域
-    region_image = image[top:bottom, left:right]
+    region_image = image[region_top:region_bottom, region_left:region_right]
     # 按行截图
     line1 = region_image[0:15, :]
     line2 = region_image[15:30, :]
-    line3 = region_image[30:bottom - top, :]
+    line3 = region_image[30:region_bottom - region_top, :]
     # 显示图像
     lines = [line1, line2, line3]
     result = []
-    # show_image(region_image)
     for line in lines:
         # 进行文字识别
-        # show_image(line)
         r = ocr.ocr_for_single_line(line)
         result.append(r.get("text"))
     return result
@@ -125,13 +116,13 @@ def show_image(img):
     cv2.destroyAllWindows()
 
 
-def auto_cube(ocr, wanna_result: List):
+def auto_cube(ocr, hwnd, wanna_result: List):
     while True:
-        cube_one()
-        result = recognize_text_in_screen_region(ocr, LEFT, TOP, RIGHT, BOTTOM)
+        cube_one(hwnd)
+        result = recognize_text_in_screen_region(ocr, hwnd, LEFT, TOP, RIGHT, BOTTOM)
         if check_result1(result, wanna_result):
             config.enabled = False
-            miao_tixing(f"洗出来了！结果：{result}")
+            miao_tixing(f"出货了！结果：{result}")
         time.sleep(1)
 
 
@@ -146,6 +137,7 @@ def init_hwnd():
         window_handle.moveTo(0, 0)  # 设置新的窗口位置坐标
         win32gui.SetForegroundWindow(hwnd)
         print("初始化成功！")
+        return hwnd
     else:
         print("窗口未找到，5秒后继续查找")
         time.sleep(5)
@@ -174,7 +166,8 @@ def miao_tixing(msg):
 
 
 if __name__ == '__main__':
-    init_hwnd()
+
+    hwnd = init_hwnd()
     # 只检测和识别水平文字
     cn_ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='db_shufflenet_v2_small',
                    det_more_configs={'rotated_bbox': False})
@@ -189,7 +182,7 @@ if __name__ == '__main__':
     # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     #                 ["力量", "力量"], ["所有", "所有"]]
     wanna_result = [["敏捷", "敏捷", "敏捷"]]
-    auto_cube(cn_ocr, wanna_result)
+    auto_cube(cn_ocr, hwnd, wanna_result)
     # config.enabled = True
     # t1 = time.time()
     # r = check_result1(result=["敏捷：+7", "所有属性：+4%", "每10级敏捷：+2"],

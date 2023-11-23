@@ -12,7 +12,6 @@ key presses. While using the libraries built with Win32Api to send keystrokes, t
 MapleStory to memory leak and crash. This does not appear to be the case with Interception, making it ideal for
 prolonged usage. Interception also utilizes SC instead of VK.
 
-
 ## git clash代理配置
 
 ```commandline
@@ -20,6 +19,12 @@ git config --global http.proxy http://127.0.0.1:7890
  
 git config --global https.proxy http://127.0.0.1:7890
 ```
+
+## Auto cube
+
+cnocr 导入异常，提示 Microsoft Visual C++ 14.0 is required
+
+参考： https://blog.csdn.net/qzzzxiaosheng/article/details/125119006
 
 ## Runes
 
