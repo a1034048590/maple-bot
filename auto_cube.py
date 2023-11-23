@@ -38,6 +38,7 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
     for i, r in enumerate(result):
         result[i] = result[i].replace("里", "量")
         result[i] = result[i].replace("童", "量")
+        result[i] = result[i].replace("单", "量")
         result[i] = result[i].replace(" ", "")
         get_result.append(result[i])
         if "%" not in r and "级" not in r:
