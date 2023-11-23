@@ -23,6 +23,7 @@ def is_repeated_n_times(string, char, n):
     return count == n
 
 
+@run_if_enabled
 def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
     """
     检查 result 中是否包含 wanna_result 元素其中一个结果组合
@@ -179,7 +180,7 @@ if __name__ == '__main__':
         time.sleep(0.01)
 
     wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-                    ["运气", "力量", "力量"], ["所有", "所有", "所有"]]
+                    ["力量", "力量", "力量"], ["所有", "所有", "所有"]]
     #
     # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     #                 ["力量", "力量"], ["所有", "所有"]]
