@@ -3,7 +3,7 @@ from typing import List
 
 import requests
 
-from auto_cube import MOUSE_X, MOUSE_Y
+from auto_cube import MOUSE_X, MOUSE_Y, check_result1
 from src.common import vkeys
 from src.modules.myListener import Listener
 
@@ -32,47 +32,6 @@ def miao_tixing(msg):
         print("请求失败")
 
 
-def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
-    """
-    检查 result 中是否包含 wanna_result 元素其中一个结果组合
-    wanna_result: [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"], ["力量", "力量", "力量"]]
-    wanna_result: [["敏捷", "力量", "最大血", "智力", "运气", "所有"]]
-    """
-    """
-    检查 result 中是否包含 wanna_result 元素其中一个结果组合
-    """
-    get_result = []
-    # 结果预处理
-    for i, r in enumerate(result):
-        result[i] = result[i].replace("里", "量")
-        result[i] = result[i].replace("童", "量")
-        result[i] = result[i].replace(" ", "")
-        get_result.append(result[i])
-        if "%" not in r and "级" not in r:
-            result[i] = ""
-            continue
-    print(f"当前结果：{get_result}")
-    print(f"修正结果：{result}")
-
-    # 遍历 wanna_result 中的每个结果组合
-    copy_result = result.copy()
-    for combination in wanna_result:
-        match_count = 0  # 记录匹配的结果数量
-        for wanna in combination:
-            for i, r in enumerate(copy_result):
-                if "所有" in r and wanna in STATS:
-                    match_count += 1
-                    copy_result[i] = ""
-                elif wanna in r:
-                    match_count += 1
-                    copy_result[i] = ""
-
-        if match_count == len(combination):
-            print("匹配成功！")
-            return True
-    print("匹配失败！")
-    return False
-
 
 if __name__ == '__main__':
     listener = Listener()
@@ -80,11 +39,11 @@ if __name__ == '__main__':
     listener.enabled = True
     while not listener.ready:
         time.sleep(0.01)
-    while True:
-        vkeys.click(15, 15)
-    # wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-    #                 ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
-    # result = ['所有技能消耗的魔量：-10%', '角色每10级敏捷：+1', '所有属性：+4%']
-    # check_result1(result, wanna_result)
+    # while True:
+    #     vkeys.click(15, 15)
+    wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
+                    ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
+    result = ['所有属性：+5%', '角色每10级力量：+1', '力量:+5%']
+    check_result1(result, wanna_result)
 
     # miao_tixing("测试")

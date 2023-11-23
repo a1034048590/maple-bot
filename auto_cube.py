@@ -23,7 +23,6 @@ def is_repeated_n_times(string, char, n):
     return count == n
 
 
-@run_if_enabled
 def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
     """
     检查 result 中是否包含 wanna_result 元素其中一个结果组合
@@ -48,12 +47,12 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
     print(f"修正结果：{result}")
 
     # 遍历 wanna_result 中的每个结果组合
-    copy_result = result.copy()
     for combination in wanna_result:
         match_count = 0  # 记录匹配的结果数量
+        copy_result = result.copy()
         for wanna in combination:
             for i, r in enumerate(copy_result):
-                if "所有" in r and wanna in STATS:
+                if "属性" in r and wanna in STATS:
                     match_count += 1
                     copy_result[i] = ""
                 elif wanna in r:
