@@ -13,7 +13,7 @@ from src.common.utils import run_if_enabled
 from src.modules.myListener import Listener
 
 MOUSE_X, MOUSE_Y = 662, 543  # 再来一次魔方相对坐标
-LEFT, TOP, RIGHT, BOTTOM = 608, 471, 774, 516  # 魔方结果相对坐标
+LEFT, TOP, RIGHT, BOTTOM = 608, 456, 774, 501  # 魔方结果相对坐标
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
 MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
 
@@ -124,8 +124,7 @@ def auto_cube(ocr, hwnd, wanna_result: List):
         result = recognize_text_in_screen_region(ocr, hwnd, LEFT, TOP, RIGHT, BOTTOM)
         if check_result1(result, wanna_result):
             config.enabled = False
-            miao_tixing(f"出货了！结果：{result}")
-        time.sleep(1)
+        # time.sleep(0.5)
 
 
 def init_hwnd():
@@ -137,7 +136,6 @@ def init_hwnd():
         window_handle = pyautogui.getWindowsWithTitle('MapleStory')[0]
         # 找到了窗口句柄，将窗口移动到 (0, 0) 位置
         window_handle.moveTo(0, 0)  # 设置新的窗口位置坐标
-        win32gui.SetForegroundWindow(hwnd)
         print("初始化成功！")
         return hwnd
     else:
@@ -180,11 +178,11 @@ if __name__ == '__main__':
         time.sleep(0.01)
 
     wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-                    ["力量", "力量", "力量"], ["所有", "所有", "所有"]]
+                    ["运气", "力量", "力量"], ["所有", "所有", "所有"]]
     #
     # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     #                 ["力量", "力量"], ["所有", "所有"]]
-    # wanna_result = [["敏捷", "敏捷", "敏捷"]]
+    wanna_result = [["敏捷", "敏捷", "敏捷"]]
     auto_cube(cn_ocr, hwnd, wanna_result)
 
     # config.enabled = True

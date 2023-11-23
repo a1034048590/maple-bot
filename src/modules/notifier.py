@@ -15,6 +15,7 @@ from src.routine.components import Point
 RUNE_RANGES = (
     ((141, 148, 245), (146, 158, 255)),
 )
+
 rune_filtered = utils.filter_color(cv2.imread('assets/rune_template.png'), RUNE_RANGES)
 RUNE_TEMPLATE = cv2.cvtColor(rune_filtered, cv2.COLOR_BGR2GRAY)
 
