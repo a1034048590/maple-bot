@@ -43,7 +43,6 @@ class Listener(Configurable):
         """
         self.ready = True
         while True:
-            print(self.enabled)
             if self.enabled:
                 if kb.is_pressed(self.config['Start/stop']):
                     Listener.toggle_enabled()
