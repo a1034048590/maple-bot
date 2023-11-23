@@ -13,7 +13,7 @@ from src.common.utils import run_if_enabled
 from src.modules.myListener import Listener
 
 MOUSE_X, MOUSE_Y = 662, 543  # 再来一次魔方相对坐标
-LEFT, TOP, RIGHT, BOTTOM = 608, 458, 774, 503  # 魔方结果相对坐标
+LEFT, TOP, RIGHT, BOTTOM = 608, 471, 774, 516  # 魔方结果相对坐标
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
 MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
 
@@ -70,7 +70,6 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
 def cube_one(hwnd):
     window_rect = win32gui.GetWindowRect(hwnd)
     window_left, window_top, _, _ = window_rect
-    print(window_rect)
     pyautogui.leftClick(MOUSE_X + window_left, MOUSE_Y + window_top)  # 单击 再使用一次魔方
     pyautogui.press("enter", 3, 0.02)
     time.sleep(2)
@@ -105,6 +104,7 @@ def recognize_text_in_screen_region(ocr, hwnd, left, top, right, bottom):
         # 进行文字识别
         r = ocr.ocr_for_single_line(line)
         result.append(r.get("text"))
+    # show_image(region_image)
     return result
 
 
