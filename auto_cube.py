@@ -8,7 +8,7 @@ import numpy as np
 import pyautogui
 import requests
 
-from src.common import config
+from src.common import config, vkeys
 from src.common.utils import run_if_enabled
 from src.modules.myListener import Listener
 
@@ -71,9 +71,9 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
 def cube_one(hwnd):
     window_rect = win32gui.GetWindowRect(hwnd)
     window_left, window_top, _, _ = window_rect
-    print(window_rect)
     pyautogui.leftClick(MOUSE_X + window_left, MOUSE_Y + window_top)  # 单击 再使用一次魔方
-    pyautogui.press("enter", 3, 0.02)
+    vkeys.click([MOUSE_X + window_left, MOUSE_Y + window_top], "left")
+    vkeys.press("enter", 3)
     time.sleep(2)
 
 
@@ -174,16 +174,18 @@ if __name__ == '__main__':
                    det_more_configs={'rotated_bbox': False})
     listener = Listener()
     listener.start()
+    listener.enabled = True
     while not listener.ready:
         time.sleep(0.01)
-    listener.enabled = True
-    # wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-    #                 ["力量", "力量", "力量"], ["所有", "所有", "所有"]]
+
+    wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
+                    ["运气", "力量", "力量"], ["所有", "所有", "所有"]]
     #
     # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     #                 ["力量", "力量"], ["所有", "所有"]]
-    wanna_result = [["敏捷", "敏捷", "敏捷"]]
+    # wanna_result = [["敏捷", "敏捷", "敏捷"]]
     auto_cube(cn_ocr, hwnd, wanna_result)
+
     # config.enabled = True
     # t1 = time.time()
     # r = check_result1(result=["敏捷：+7", "所有属性：+4%", "每10级敏捷：+2"],

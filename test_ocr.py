@@ -3,6 +3,10 @@ from typing import List
 
 import requests
 
+from auto_cube import MOUSE_X, MOUSE_Y
+from src.common import vkeys
+from src.modules.myListener import Listener
+
 MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
 
@@ -71,8 +75,16 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
 
 
 if __name__ == '__main__':
-    wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-                    ["力量", "力量", "力量"], ["所有", "所有", "所有"]]
-    check_result1(['角色每10级敏捷：+2', '所有属性：+4%', '敏捷:+5%'], wanna_result)
+    listener = Listener()
+    listener.start()
+    listener.enabled = True
+    while not listener.ready:
+        time.sleep(0.01)
+    while True:
+        vkeys.click(15, 15)
+    # wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
+    #                 ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
+    # result = ['所有技能消耗的魔量：-10%', '角色每10级敏捷：+1', '所有属性：+4%']
+    # check_result1(result, wanna_result)
 
     # miao_tixing("测试")
