@@ -41,7 +41,7 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
         result[i] = result[i].replace("单", "量")
         result[i] = result[i].replace(" ", "")
         get_result.append(result[i])
-        if "%" not in r and "级" not in r:
+        if ("%" not in r and "级" not in r) or ("级" in r and "+1" in r):
             result[i] = ""
             continue
     print(f"想要结果:{wanna_result}")
@@ -76,6 +76,7 @@ def cube_one(hwnd):
     vkeys.click([MOUSE_X + window_left, MOUSE_Y + window_top], "left")
     vkeys.press("enter", 3)
     time.sleep(2)
+
 
 @run_if_enabled
 def recognize_text_in_screen_region(ocr, hwnd, left, top, right, bottom):
