@@ -44,7 +44,8 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
         if "%" not in r and "级" not in r:
             result[i] = ""
             continue
-    print(f"当前结果：{get_result}")
+    print(f"想要结果:{wanna_result}")
+    print(f"识别结果：{get_result}")
     print(f"修正结果：{result}")
 
     # 遍历 wanna_result 中的每个结果组合
@@ -76,7 +77,7 @@ def cube_one(hwnd):
     vkeys.press("enter", 3)
     time.sleep(2)
 
-
+@run_if_enabled
 def recognize_text_in_screen_region(ocr, hwnd, left, top, right, bottom):
     # 获取窗口位置
     window_rect = win32gui.GetWindowRect(hwnd)
@@ -121,10 +122,14 @@ def show_image(img):
 def auto_cube(ocr, hwnd, wanna_result: List):
     while True:
         cube_one(hwnd)
+        # t1 = time.time()
         result = recognize_text_in_screen_region(ocr, hwnd, LEFT, TOP, RIGHT, BOTTOM)
         if check_result1(result, wanna_result):
             config.enabled = False
-        # time.sleep(0.5)
+            miao_tixing(f"出货了{result}")
+        # print(t1- time.time())
+
+        time.sleep(0.1)
 
 
 def init_hwnd():
@@ -173,16 +178,17 @@ if __name__ == '__main__':
                    det_more_configs={'rotated_bbox': False})
     listener = Listener()
     listener.start()
-    listener.enabled = True
     while not listener.ready:
         time.sleep(0.01)
+    listener.enabled = True
 
     wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-                    ["运气", "力量", "力量"], ["所有", "所有", "所有"]]
+                    ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
     #
     # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     #                 ["力量", "力量"], ["所有", "所有"]]
-    wanna_result = [["敏捷", "敏捷", "敏捷"]]
+    # wanna_result = [["敏捷", "敏捷", "敏捷"]]
+    # wanna_result = [["攻击力", "攻击力"]]
     auto_cube(cn_ocr, hwnd, wanna_result)
 
     # config.enabled = True
