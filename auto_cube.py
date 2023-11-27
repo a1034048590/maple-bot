@@ -57,12 +57,13 @@ def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: 
 
         if match_count == len(combination):
             # 判断大小
-            print("匹配成功！")
+            print("行数匹配成功！")
             result.append(size)  # 调试使用
             result.append(size >= wanna_size)  # 调试使用
             return True
-
-    print("匹配失败！")
+    size_result = "评分匹配成功！" if size >= wanna_size else "评分匹配失败！"
+    print(size_result)
+    print("行数匹配失败！")
     return False
 
 
@@ -200,7 +201,7 @@ if __name__ == '__main__':
     hwnd = init_hwnd()
     # 只检测和识别水平文字
     cn_ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='db_shufflenet_v2_small',
-                   det_more_configs={'rotated_bbox': False})
+                   det_model_backend="pytorch", det_more_configs={'rotated_bbox': False})
     listener = Listener()
     listener.start()
     while not listener.ready:
