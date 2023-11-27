@@ -16,7 +16,7 @@ MOUSE_X, MOUSE_Y = 662, 543  # 再来一次魔方相对坐标
 LEFT, TOP, RIGHT, BOTTOM = 608, 456, 774, 501  # 魔方结果相对坐标
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
 MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
-BIG_RESULT = ["7%", "+2", "8%"]
+BIG_RESULT = ["7%", "+2", "8%", "冷却"]
 SMALL_RESULT = ["5%", "+1", "4%", "6%"]
 
 
@@ -26,7 +26,7 @@ def is_repeated_n_times(string, char, n):
 
 
 @run_if_enabled
-def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: str) -> bool:
+def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: int) -> bool:
     """
     检查 result 中是否包含 wanna_result 元素其中一个结果组合
     wanna_result: [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"], ["力量", "力量", "力量"]]
@@ -35,20 +35,9 @@ def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: 
     """
     检查 result 中是否包含 wanna_result 元素其中一个结果组合
     """
-    get_result = []
+    print(f"想要结果组合：{wanna_result}\n想要评分:{wanna_size}")
     # 结果预处理
-    for i, r in enumerate(result):
-        result[i] = result[i].replace("里", "量")
-        result[i] = result[i].replace("童", "量")
-        result[i] = result[i].replace("单", "量")
-        result[i] = result[i].replace(" ", "")
-        get_result.append(result[i])
-        if ("%" not in r and "级" not in r) or ("级" in r and "+1" in r):
-            result[i] = ""
-            continue
-    print(f"想要结果:{wanna_result}")
-    print(f"识别结果：{get_result}")
-    print(f"修正结果：{result}")
+    result = correct_result(result)
 
     # 遍历 wanna_result 判断属性
     for combination in wanna_result:
@@ -63,27 +52,36 @@ def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: 
                     match_count += 1
                     copy_result[i] = ""
 
-        if match_count == len(combination):
+        if match_count == len(combination) and check_size(result, wanna_size):
             # 判断大小
-            check_size(result, wanna_size)
             print("匹配成功！")
-            return True
     print("匹配失败！")
     return False
 
 
-def check_size(result, wanna_size):
-    size_txt = ""
+def correct_result(result):
+    get_result = []
+    for i, r in enumerate(result):
+        result[i] = result[i].replace("里", "量")
+        result[i] = result[i].replace("童", "量")
+        result[i] = result[i].replace("单", "量")
+        result[i] = result[i].replace(" ", "")
+        get_result.append(result[i])
+    print(f"修正结果：{result}")
+    print(f"识别结果：{get_result}")
+    return result
+
+
+def check_size(result, wanna_size=200):
+    size = 0
     for r in result:
-        if any(r in s for s in BIG_RESULT):
-            size_txt += "大"
-        elif any(r in s for s in SMALL_RESULT):
-            size_txt += "小"
-    size_txt = sorted(size_txt)
-    size_txt = ''.join(size_txt)
-    if wanna_size == size_txt:
+        if any(s in r for s in BIG_RESULT):
+            size += 100
+        elif any(s in r for s in SMALL_RESULT):
+            size += 10
+    print(f"结果评分：{size}")
+    if size >= wanna_size:
         return True
-    print(size_txt)
     return False
 
 
@@ -191,25 +189,25 @@ def miao_tixing(msg):
 
 
 if __name__ == '__main__':
-
-    hwnd = init_hwnd()
-    # 只检测和识别水平文字
-    cn_ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='db_shufflenet_v2_small',
-                   det_more_configs={'rotated_bbox': False})
-    listener = Listener()
-    listener.start()
-    while not listener.ready:
-        time.sleep(0.01)
-    listener.enabled = True
-
-    wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-                    ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
+    check_size(["敏捷：+7%", "每级敏捷：+2", "每级敏捷：+2"], 200)
+    # hwnd = init_hwnd()
+    # # 只检测和识别水平文字
+    # cn_ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='db_shufflenet_v2_small',
+    #                det_more_configs={'rotated_bbox': False})
+    # listener = Listener()
+    # listener.start()
+    # while not listener.ready:
+    #     time.sleep(0.01)
+    # listener.enabled = True
     #
-    # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
-    #                 ["力量", "力量"], ["所有", "所有"]]
-    # wanna_result = [["敏捷", "敏捷", "敏捷"]]
-    # wanna_result = [["攻击力", "攻击力"]]
-    auto_cube(cn_ocr, hwnd, wanna_result)
+    # wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
+    #                 ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
+    # #
+    # # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
+    # #                 ["力量", "力量"], ["所有", "所有"]]
+    # # wanna_result = [["敏捷", "敏捷", "敏捷"]]
+    # # wanna_result = [["攻击力", "攻击力"]]
+    # auto_cube(cn_ocr, hwnd, wanna_result, "大大小")
 
     # config.enabled = True
     # t1 = time.time()

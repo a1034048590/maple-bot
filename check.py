@@ -17,6 +17,8 @@ def match_template_on_screen(template_image_path, x1, y1, x2, y2, threshold=0.8)
     template_image = cv2.imread(template_image_path, cv2.COLOR_RGBA2RGB)  # 待匹配图像，灰度模式
 
     # 捕获屏幕区域的图像
+
+
     target_image = capture_screen(x1, y1, x2, y2)
     show_image(target_image)
 
