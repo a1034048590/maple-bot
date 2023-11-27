@@ -16,6 +16,8 @@ MOUSE_X, MOUSE_Y = 662, 543  # 再来一次魔方相对坐标
 LEFT, TOP, RIGHT, BOTTOM = 608, 471, 774, 516  # 魔方结果相对坐标
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
 MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
+BIG_RESULT = ["7%", "+2", "8%"]
+SMALL_RESULT = ["5%", "+1", "4%", "6%"]
 
 
 def is_repeated_n_times(string, char, n):
@@ -24,7 +26,7 @@ def is_repeated_n_times(string, char, n):
 
 
 @run_if_enabled
-def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
+def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: str) -> bool:
     """
     检查 result 中是否包含 wanna_result 元素其中一个结果组合
     wanna_result: [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"], ["力量", "力量", "力量"]]
@@ -47,7 +49,7 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
     print(f"当前结果：{get_result}")
     print(f"修正结果：{result}")
 
-    # 遍历 wanna_result 中的每个结果组合
+    # 遍历 wanna_result 判断属性
     for combination in wanna_result:
         match_count = 0  # 记录匹配的结果数量
         copy_result = result.copy()
@@ -61,9 +63,26 @@ def check_result1(result: List[str], wanna_result: List[List[str]]) -> bool:
                     copy_result[i] = ""
 
         if match_count == len(combination):
+            # 判断大小
+            check_size(result, wanna_size)
             print("匹配成功！")
             return True
     print("匹配失败！")
+    return False
+
+
+def check_size(result, wanna_size):
+    size_txt = ""
+    for r in result:
+        if any(r in s for s in BIG_RESULT):
+            size_txt += "大"
+        elif any(r in s for s in SMALL_RESULT):
+            size_txt += "小"
+    size_txt = sorted(size_txt)
+    size_txt = ''.join(size_txt)
+    if wanna_size == size_txt:
+        return True
+    print(size_txt)
     return False
 
 
@@ -118,11 +137,11 @@ def show_image(img):
     cv2.destroyAllWindows()
 
 
-def auto_cube(ocr, hwnd, wanna_result: List):
+def auto_cube(ocr, hwnd, wanna_result: List, wanna_size: str):
     while True:
         cube_one(hwnd)
         result = recognize_text_in_screen_region(ocr, hwnd, LEFT, TOP, RIGHT, BOTTOM)
-        if check_result1(result, wanna_result):
+        if check_result1(result, wanna_result, wanna_size, wanna_size):
             config.enabled = False
             miao_tixing(f"出货了！结果：{result}")
         time.sleep(1)
