@@ -13,7 +13,7 @@ from src.common.utils import run_if_enabled
 from src.modules.myListener import Listener
 
 MOUSE_X, MOUSE_Y = 662, 543  # 再来一次魔方相对坐标
-LEFT, TOP, RIGHT, BOTTOM = 608, 471, 774, 516  # 魔方结果相对坐标
+LEFT, TOP, RIGHT, BOTTOM = 608, 456, 774, 501  # 魔方结果相对坐标
 STATS = ["敏捷", "力量", "最大血", "智力", "运气", "所有"]
 MIAO_CODE = 'tvHK4mP'  # string，喵码。指定发出的提醒，一个提醒对应一个喵码。（必填）
 BIG_RESULT = ["7%", "+2", "8%"]
@@ -43,10 +43,11 @@ def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: 
         result[i] = result[i].replace("单", "量")
         result[i] = result[i].replace(" ", "")
         get_result.append(result[i])
-        if "%" not in r and "级" not in r:
+        if ("%" not in r and "级" not in r) or ("级" in r and "+1" in r):
             result[i] = ""
             continue
-    print(f"当前结果：{get_result}")
+    print(f"想要结果:{wanna_result}")
+    print(f"识别结果：{get_result}")
     print(f"修正结果：{result}")
 
     # 遍历 wanna_result 判断属性
@@ -96,6 +97,7 @@ def cube_one(hwnd):
     time.sleep(2)
 
 
+@run_if_enabled
 def recognize_text_in_screen_region(ocr, hwnd, left, top, right, bottom):
     # 获取窗口位置
     window_rect = win32gui.GetWindowRect(hwnd)
@@ -140,11 +142,14 @@ def show_image(img):
 def auto_cube(ocr, hwnd, wanna_result: List, wanna_size: str):
     while True:
         cube_one(hwnd)
+        # t1 = time.time()
         result = recognize_text_in_screen_region(ocr, hwnd, LEFT, TOP, RIGHT, BOTTOM)
         if check_result1(result, wanna_result, wanna_size, wanna_size):
             config.enabled = False
-            miao_tixing(f"出货了！结果：{result}")
-        time.sleep(1)
+            miao_tixing(f"出货了{result}")
+        # print(t1- time.time())
+
+        time.sleep(0.1)
 
 
 def init_hwnd():
@@ -156,7 +161,6 @@ def init_hwnd():
         window_handle = pyautogui.getWindowsWithTitle('MapleStory')[0]
         # 找到了窗口句柄，将窗口移动到 (0, 0) 位置
         window_handle.moveTo(0, 0)  # 设置新的窗口位置坐标
-        win32gui.SetForegroundWindow(hwnd)
         print("初始化成功！")
         return hwnd
     else:
@@ -194,16 +198,17 @@ if __name__ == '__main__':
                    det_more_configs={'rotated_bbox': False})
     listener = Listener()
     listener.start()
-    listener.enabled = True
     while not listener.ready:
         time.sleep(0.01)
+    listener.enabled = True
 
     wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-                    ["力量", "力量", "力量"], ["所有", "所有", "所有"]]
+                    ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
     #
     # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     #                 ["力量", "力量"], ["所有", "所有"]]
     # wanna_result = [["敏捷", "敏捷", "敏捷"]]
+    # wanna_result = [["攻击力", "攻击力"]]
     auto_cube(cn_ocr, hwnd, wanna_result)
 
     # config.enabled = True
