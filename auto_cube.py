@@ -35,11 +35,14 @@ def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: 
     """
     检查 result 中是否包含 wanna_result 元素其中一个结果组合
     """
-    print(f"想要结果组合：{wanna_result}\n想要评分:{wanna_size}")
+    print(f"想要结果组合：{wanna_result}")
     # 结果预处理
+    print(f"识别结果：{result}")
     result = correct_result(result)
 
     # 遍历 wanna_result 判断属性
+    print(f"需求评分: {wanna_size}")
+    size = check_size(result)
     for combination in wanna_result:
         match_count = 0  # 记录匹配的结果数量
         copy_result = result.copy()
@@ -52,9 +55,13 @@ def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: 
                     match_count += 1
                     copy_result[i] = ""
 
-        if match_count == len(combination) and check_size(result, wanna_size):
+        if match_count == len(combination):
             # 判断大小
             print("匹配成功！")
+            result.append(size)  # 调试使用
+            result.append(size >= wanna_size)  # 调试使用
+            return True
+
     print("匹配失败！")
     return False
 
@@ -67,8 +74,11 @@ def correct_result(result):
         result[i] = result[i].replace("单", "量")
         result[i] = result[i].replace(" ", "")
         get_result.append(result[i])
+        if (("%" not in r and "级" not in r)
+                or ("级" in r and "+1" in r)):
+            result[i] = ""
+            continue
     print(f"修正结果：{result}")
-    print(f"识别结果：{get_result}")
     return result
 
 
@@ -80,9 +90,7 @@ def check_size(result, wanna_size=200):
         elif any(s in r for s in SMALL_RESULT):
             size += 10
     print(f"结果评分：{size}")
-    if size >= wanna_size:
-        return True
-    return False
+    return size
 
 
 @run_if_enabled
@@ -137,12 +145,12 @@ def show_image(img):
     cv2.destroyAllWindows()
 
 
-def auto_cube(ocr, hwnd, wanna_result: List, wanna_size: str):
+def auto_cube(ocr, hwnd, wanna_result: List, wanna_size: int):
     while True:
         cube_one(hwnd)
         # t1 = time.time()
         result = recognize_text_in_screen_region(ocr, hwnd, LEFT, TOP, RIGHT, BOTTOM)
-        if check_result1(result, wanna_result, wanna_size, wanna_size):
+        if check_result1(result, wanna_result, wanna_size):
             config.enabled = False
             miao_tixing(f"出货了{result}")
         # print(t1- time.time())
@@ -189,25 +197,26 @@ def miao_tixing(msg):
 
 
 if __name__ == '__main__':
-    check_size(["敏捷：+7%", "每级敏捷：+2", "每级敏捷：+2"], 200)
-    # hwnd = init_hwnd()
-    # # 只检测和识别水平文字
-    # cn_ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='db_shufflenet_v2_small',
-    #                det_more_configs={'rotated_bbox': False})
-    # listener = Listener()
-    # listener.start()
-    # while not listener.ready:
-    #     time.sleep(0.01)
-    # listener.enabled = True
+    hwnd = init_hwnd()
+    # 只检测和识别水平文字
+    cn_ocr = CnOcr(rec_model_name='densenet_lite_136-fc', det_model_name='db_shufflenet_v2_small',
+                   det_more_configs={'rotated_bbox': False})
+    listener = Listener()
+    listener.start()
+    while not listener.ready:
+        time.sleep(0.01)
+    listener.enabled = True
     #
-    # wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
-    #                 ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
+    wanna_result = [["敏捷", "敏捷", "敏捷"], ["力量", "力量", "力量"], ["智力", "智力", "智力"],
+                    ["运气", "运气", "运气"], ["所有", "所有", "所有"]]
     # #
     # # wanna_result = [["敏捷", "敏捷"], ["力量", "力量"], ["智力", "智力"],
     # #                 ["力量", "力量"], ["所有", "所有"]]
     # # wanna_result = [["敏捷", "敏捷", "敏捷"]]
     # # wanna_result = [["攻击力", "攻击力"]]
-    # auto_cube(cn_ocr, hwnd, wanna_result, "大大小")
+    auto_cube(cn_ocr, hwnd, wanna_result, 200)
+    # config.enabled = True
+    # check_result1(["敏捷：+7%", "每级敏捷：+2", "每级敏捷：+2"], wanna_result, 200)
 
     # config.enabled = True
     # t1 = time.time()
