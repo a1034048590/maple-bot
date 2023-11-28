@@ -55,7 +55,7 @@ def check_result1(result: List[str], wanna_result: List[List[str]], wanna_size: 
                     match_count += 1
                     copy_result[i] = ""
 
-        if match_count == len(combination):
+        if match_count == len(combination) and size >= wanna_size:
             # 判断大小
             print("行数匹配成功！")
             result.append(size)  # 调试使用
@@ -75,8 +75,8 @@ def correct_result(result):
         result[i] = result[i].replace("单", "量")
         result[i] = result[i].replace(" ", "")
         get_result.append(result[i])
-        if (("%" not in r and "级" not in r)
-                or ("级" in r and "+1" in r)):
+        if (("%" not in r and "级" not in r)):
+                # or ("级" in r and "+1" in r)):
             result[i] = ""
             continue
     print(f"修正结果：{result}")
