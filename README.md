@@ -26,6 +26,10 @@ cnocr 导入异常，提示 Microsoft Visual C++ 14.0 is required
 
 参考： https://blog.csdn.net/qzzzxiaosheng/article/details/125119006
 
+屏幕分辨率：1920*1080
+屏幕缩放比例：100%
+游戏窗口分辨率：1366*768
+
 ## Runes
 
 Runes are a part of MapleStory's in-game anti-botting system. They come in the form of captchas that require the player
