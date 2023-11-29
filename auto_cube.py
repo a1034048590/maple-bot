@@ -149,7 +149,6 @@ def show_image(img):
 def auto_cube(ocr, hwnd, wanna_result: List, wanna_size: int):
     while True:
         cube_one(hwnd)
-        # t1 = time.time()
         result = recognize_text_in_screen_region(ocr, hwnd, LEFT, TOP, RIGHT, BOTTOM)
         if check_result1(result, wanna_result, wanna_size):
             config.enabled = False
@@ -197,6 +196,10 @@ def miao_tixing(msg):
         print("请求失败")
 
 
+
+
+
+
 if __name__ == '__main__':
     hwnd = init_hwnd()
     # 只检测和识别水平文字
@@ -215,6 +218,7 @@ if __name__ == '__main__':
     # #                 ["力量", "力量"], ["所有", "所有"]]
     # # wanna_result = [["敏捷", "敏捷", "敏捷"]]
     # # wanna_result = [["攻击力", "攻击力"]]
+
     auto_cube(cn_ocr, hwnd, wanna_result, 200)
     # config.enabled = True
     # check_result1(["敏捷：+7%", "每级敏捷：+2", "每级敏捷：+2"], wanna_result, 200)
